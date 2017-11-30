@@ -1,0 +1,9 @@
+empy==3.3.2
+Jinja2==2.9.6
+MarkupSafe==1.0
+numpy==1.13.1
+pandas==0.20.3
+pyserial==3.4
+python-dateutil==2.6.1
+pytz==2017.2
+six==1.10.0

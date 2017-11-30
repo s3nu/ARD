@@ -1,0 +1,54 @@
+#!/bin/bash
+
+sudo -v 	#Ask for the administrator password upfront
+
+###############################################################################
+# ========= Xcode ==========												  #
+###############################################################################
+#	xcode-select --install 		#Install Command Line Tools
+#	sudo xcodebuild -license	#Agree to the XCode license
+
+if ! xcode-select --print-path &> /dev/null; then
+  xcode-select --install &> /dev/null	#install cli tools if needed
+
+  until xcode-select --print-path &> /dev/null; do
+    sleep 5
+  done
+
+  print_result $? 'Install XCode Command Line Tools'
+
+  sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+  print_result $? 'Make "xcode-select" developer directory point to Xcode'
+
+  sudo xcodebuild -license #Accept User Agreement
+  print_result $? 'Agree with the XCode Command Line Tools licence'
+fi
+
+###############################################################################
+# ========= Brew ==========													  #
+###############################################################################
+# Check for Homebrew and install it if missing + list of dev packages
+if test ! $(which brew)
+then
+  echo "Installing Homebrew..."
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+brew update     # Latest updates and upgrades
+brew upgrade 	# Latest updates and upgrades
+brew cleanup	# Remove Depracted formulas
+brew prune		# Remove Depracted formulas
+
+echo " ───────────────────────────────────────────────────┐"
+echo "       Installing 'BREW Packages'                    "
+echo "└─────────────────────────────────────────────────── "
+brew tap px4/px4
+brew install px4-dev
+brew install python2
+
+echo " ───────────────────────────────────────────────────┐"
+echo "       Installing Python packages                    "
+echo "└─────────────────────────────────────────────────── "
+pip2 install --upgrade pip
+pip2 install --upgrade virtualenv
+pip2 install -r requirements.txt
